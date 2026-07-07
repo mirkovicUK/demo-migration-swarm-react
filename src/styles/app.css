@@ -1,0 +1,134 @@
+:root {
+  --bg: #0f172a;
+  --panel: #1e293b;
+  --text: #e2e8f0;
+  --muted: #94a3b8;
+  --accent: #38bdf8;
+  --high: #f87171;
+  --normal: #38bdf8;
+  --low: #94a3b8;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.app {
+  max-width: 640px;
+  margin: 3rem auto;
+  padding: 1.5rem;
+  background: var(--panel);
+  border-radius: 12px;
+}
+
+.app__header h1 {
+  margin: 0;
+}
+
+.app__subtitle {
+  margin: 0.25rem 0 1.5rem;
+  color: var(--muted);
+}
+
+.add-todo {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.add-todo__title {
+  flex: 1;
+  padding: 0.5rem;
+  border-radius: 6px;
+  border: 1px solid #334155;
+  background: #0b1220;
+  color: var(--text);
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  background: var(--accent);
+  color: #062033;
+  font-weight: 600;
+}
+
+.filter-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  color: var(--muted);
+}
+
+.filter-bar__filter {
+  background: transparent;
+  color: var(--muted);
+}
+
+.filter-bar__filter.is-active {
+  background: var(--accent);
+  color: #062033;
+}
+
+.todo-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.todo-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: #0b1220;
+  border-radius: 6px;
+  border-left: 4px solid var(--normal);
+}
+
+.todo-item--high {
+  border-left-color: var(--high);
+}
+
+.todo-item--low {
+  border-left-color: var(--low);
+}
+
+.todo-item.is-done .todo-item__title {
+  text-decoration: line-through;
+  color: var(--muted);
+}
+
+.todo-item__title {
+  flex: 1;
+}
+
+.todo-item__ref {
+  color: var(--muted);
+  font-size: 0.8rem;
+  margin-right: 0.25rem;
+}
+
+.todo-item__remove {
+  background: transparent;
+  color: var(--high);
+}
+
+.todo-list__empty {
+  color: var(--muted);
+  text-align: center;
+}
