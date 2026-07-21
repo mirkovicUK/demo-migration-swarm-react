@@ -1,13 +1,16 @@
+// src/components/AddTodo.tsx — controlled form. Exercises useState, a form
+// submit handler, and a change handler on a <select> — all things the React
+// profile's TS rewrite must type (React.FormEvent / React.ChangeEvent, props).
 import { useState } from "react";
-import { PRIORITIES } from "../lib/todos";
+import { PRIORITIES, TodoInput } from "../lib/todos";
 
 export interface AddTodoProps {
   onAdd: (input: TodoInput) => void;
 }
 
 export default function AddTodo({ onAdd }: AddTodoProps): JSX.Element {
-  const [title, setTitle] = useState("");
-  const [priority, setPriority] = useState("normal");
+  const [title, setTitle] = useState<string>("");
+  const [priority, setPriority] = useState<string>("normal");
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
