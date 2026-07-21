@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { newId, newShortRef } from "../../src/lib/id";
+import { newId, newShortRef } from "../src/lib/id";
 
 describe("id", () => {
   it("newId returns a non-empty unique string", () => {
