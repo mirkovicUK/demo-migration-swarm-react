@@ -21,9 +21,7 @@ export default function App(): React.JSX.Element {
     <main className="app">
       <header className="app__header">
         <h1>Task Board</h1>
-        <p className="app__subtitle">
-          A tiny React app for Migration Swarm to migrate.
-        </p>
+        <p className="app__subtitle">A tiny React app for Migration Swarm to migrate.</p>
       </header>
 
       <AddTodo onAdd={addTodo} />
