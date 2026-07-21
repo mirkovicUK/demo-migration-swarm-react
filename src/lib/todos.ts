@@ -1,19 +1,32 @@
-// src/lib/todos.js — pure todo model + reducer.
+// src/lib/todos.ts — pure todo model + reducer.
 // Framework-agnostic business logic: no React here. The useTodos hook wraps
 // these pure functions with useReducer, and the components render their output.
 // Consumes the HOT id module; consumed by the hook and the filter helpers.
-import { newId, newShortRef } from "./id.js";
+import { newId, newShortRef } from "./id";
 
 export const PRIORITIES: string[] = ["low", "normal", "high"];
 
-export function createTodo(input: { title?: string | undefined; priority?: string | undefined }): { id: string; ref: string; title: string; priority: string; done: boolean; createdAt: string } {
+export interface Todo {
+  id: string;
+  ref: string;
+  title: string;
+  priority: string;
+  done: boolean;
+  createdAt: string;
+}
+
+export function createTodo(input: {
+  title?: string | undefined;
+  priority?: string | undefined;
+}): Todo {
   const title = (input && input.title ? String(input.title) : "").trim();
   if (!title) {
     throw new Error("Cannot create todo: title is required");
   }
-  const priority = PRIORITIES.includes(input && input.priority ? input.priority : "")
-    ? (input && input.priority ? input.priority : "")
-    : "normal";
+  const priority =
+    PRIORITIES.includes(input?.priority ?? "") && input?.priority
+      ? input.priority
+      : "normal";
   return {
     id: newId(),
     ref: newShortRef(),
@@ -25,7 +38,17 @@ export function createTodo(input: { title?: string | undefined; priority?: strin
 }
 
 // Reducer actions: add | toggle | remove | edit | clearCompleted.
-export function todosReducer(state: Array<{ id: string; ref: string; title: string; priority: string; done: boolean; createdAt: string }>, action: { type: string; input?: any; id?: string; title?: string }): Array<{ id: string; ref: string; title: string; priority: string; done: boolean; createdAt: string }> {
+export type TodosAction =
+  | { type: "add"; input: { title?: string; priority?: string } }
+  | { type: "toggle"; id: string }
+  | { type: "remove"; id: string }
+  | { type: "edit"; id: string; title: string }
+  | { type: "clearCompleted" };
+
+export function todosReducer(
+  state: Todo[],
+  action: TodosAction
+): Todo[] {
   switch (action.type) {
     case "add":
       return [...state, createTodo(action.input)];
@@ -37,7 +60,9 @@ export function todosReducer(state: Array<{ id: string; ref: string; title: stri
       return state.filter((t) => t.id !== action.id);
     case "edit":
       return state.map((t) =>
-        t.id === action.id ? { ...t, title: action.title ? action.title.trim() : t.title } : t
+        t.id === action.id
+          ? { ...t, title: action.title.trim() || t.title }
+          : t
       );
     case "clearCompleted":
       return state.filter((t) => !t.done);
@@ -46,6 +71,6 @@ export function todosReducer(state: Array<{ id: string; ref: string; title: stri
   }
 }
 
-export function countRemaining(todos: Array<{ done: boolean }>): number {
+export function countRemaining(todos: Todo[]): number {
   return todos.reduce((n, t) => (t.done ? n : n + 1), 0);
 }
