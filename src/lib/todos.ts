@@ -6,13 +6,27 @@ import { newId, newShortRef } from "./id.js";
 
 export const PRIORITIES: string[] = ["low", "normal", "high"];
 
-export function createTodo(input: { title?: string; priority?: string }): any {
+export interface TodoInput {
+  title?: string;
+  priority?: string;
+}
+
+export interface Todo {
+  id: string;
+  ref: string;
+  title: string;
+  priority: string;
+  done: boolean;
+  createdAt: string;
+}
+
+export function createTodo(input: TodoInput): Todo {
   const title = (input && input.title ? String(input.title) : "").trim();
   if (!title) {
     throw new Error("Cannot create todo: title is required");
   }
-  const priority = PRIORITIES.includes(input && input.priority)
-    ? input.priority
+  const priority = PRIORITIES.includes(input && input.priority ? input.priority : "")
+    ? (input && input.priority) ?? "normal"
     : "normal";
   return {
     id: newId(),
@@ -25,7 +39,14 @@ export function createTodo(input: { title?: string; priority?: string }): any {
 }
 
 // Reducer actions: add | toggle | remove | edit | clearCompleted.
-export function todosReducer(state: any[], action: { type: string; input?: any; id?: string; title?: string }): any[] {
+export type TodoAction =
+  | { type: "add"; input: TodoInput }
+  | { type: "toggle"; id: string }
+  | { type: "remove"; id: string }
+  | { type: "edit"; id: string; title: string }
+  | { type: "clearCompleted" };
+
+export function todosReducer(state: Todo[], action: TodoAction): Todo[] {
   switch (action.type) {
     case "add":
       return [...state, createTodo(action.input)];
@@ -46,6 +67,6 @@ export function todosReducer(state: any[], action: { type: string; input?: any; 
   }
 }
 
-export function countRemaining(todos: any[]): number {
+export function countRemaining(todos: Todo[]): number {
   return todos.reduce((n, t) => (t.done ? n : n + 1), 0);
 }
