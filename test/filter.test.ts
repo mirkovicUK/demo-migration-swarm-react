@@ -1,11 +1,12 @@
-// test/filter.test.ts — Vitest test suite.
+// test/filter.test.ts — Vitest (ESM).
 import { describe, it, expect } from "vitest";
 import { filterTodos, sortTodos, FILTERS } from "../src/lib/filter";
+import { Todo } from "../src/lib/todos";
 
-const sample = [
-  { id: "1", priority: "low", done: false },
-  { id: "2", priority: "high", done: false },
-  { id: "3", priority: "normal", done: true },
+const sample: Todo[] = [
+  { id: "1", ref: "T-000001", title: "Task 1", priority: "low", done: false, createdAt: "2026-01-01T00:00:00.000Z" },
+  { id: "2", ref: "T-000002", title: "Task 2", priority: "high", done: false, createdAt: "2026-01-01T00:00:00.000Z" },
+  { id: "3", ref: "T-000003", title: "Task 3", priority: "normal", done: true, createdAt: "2026-01-01T00:00:00.000Z" },
 ];
 
 describe("filter", () => {
@@ -36,9 +37,9 @@ describe("filter", () => {
   });
 
   it("sortTodos is stable within a priority tier", () => {
-    const tie = [
-      { id: "a", priority: "normal", done: false },
-      { id: "b", priority: "normal", done: false },
+    const tie: Todo[] = [
+      { id: "a", ref: "T-000004", title: "Task A", priority: "normal", done: false, createdAt: "2026-01-01T00:00:00.000Z" },
+      { id: "b", ref: "T-000005", title: "Task B", priority: "normal", done: false, createdAt: "2026-01-01T00:00:00.000Z" },
     ];
     expect(sortTodos(tie).map((t) => t.id)).toEqual(["a", "b"]);
   });
