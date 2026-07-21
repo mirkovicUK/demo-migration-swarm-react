@@ -1,7 +1,7 @@
 // src/components/TodoList.tsx — renders the visible todos, or an empty state.
 // A presentational component that maps a list prop to TodoItem children.
-import TodoItem from "./TodoItem.tsx";
 import { Todo } from '../lib/todos';
+import TodoItem from "./TodoItem";
 
 export interface TodoListProps {
   todos: Todo[];
