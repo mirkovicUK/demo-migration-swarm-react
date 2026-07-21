@@ -2,7 +2,7 @@
 // Framework-agnostic business logic: no React here. The useTodos hook wraps
 // these pure functions with useReducer, and the components render their output.
 // Consumes the HOT id module; consumed by the hook and the filter helpers.
-import { newId, newShortRef } from "./id";
+import { newId, newShortRef } from "./id.js";
 
 export const PRIORITIES: string[] = ["low", "normal", "high"];
 
@@ -32,9 +32,10 @@ export function createTodo(input: TodoInput): Todo {
   if (!title) {
     throw new Error("Cannot create todo: title is required");
   }
-  const priority = PRIORITIES.includes(input && input.priority)
-    ? input.priority!
-    : "normal";
+  const priority =
+    input && input.priority !== undefined && PRIORITIES.includes(input.priority)
+      ? input.priority
+      : "normal";
   return {
     id: newId(),
     ref: newShortRef(),
