@@ -1,4 +1,4 @@
-// src/lib/todos.js — pure todo model + reducer.
+// src/lib/todos.ts — pure todo model + reducer.
 // Framework-agnostic business logic: no React here. The useTodos hook wraps
 // these pure functions with useReducer, and the components render their output.
 // Consumes the HOT id module; consumed by the hook and the filter helpers.
@@ -20,20 +20,13 @@ export interface Todo {
   createdAt: string;
 }
 
-export type TodoAction =
-  | { type: 'add'; input: TodoInput }
-  | { type: 'toggle'; id: string }
-  | { type: 'remove'; id: string }
-  | { type: 'edit'; id: string; title: string }
-  | { type: 'clearCompleted' };
-
 export function createTodo(input: TodoInput): Todo {
   const title = (input && input.title ? String(input.title) : "").trim();
   if (!title) {
     throw new Error("Cannot create todo: title is required");
   }
-  const priority = PRIORITIES.includes(input && input.priority)
-    ? input.priority!
+  const priority = PRIORITIES.includes(input && input.priority ? input.priority : "normal")
+    ? (input && input.priority) ?? "normal"
     : "normal";
   return {
     id: newId(),
@@ -46,6 +39,13 @@ export function createTodo(input: TodoInput): Todo {
 }
 
 // Reducer actions: add | toggle | remove | edit | clearCompleted.
+export type TodoAction =
+  | { type: "add"; input: TodoInput }
+  | { type: "toggle"; id: string }
+  | { type: "remove"; id: string }
+  | { type: "edit"; id: string; title: string }
+  | { type: "clearCompleted" };
+
 export function todosReducer(state: Todo[], action: TodoAction): Todo[] {
   switch (action.type) {
     case "add":
