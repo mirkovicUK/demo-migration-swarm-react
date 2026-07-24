@@ -5,7 +5,18 @@ import {
   todosReducer,
   countRemaining,
   PRIORITIES,
+  Todo,
 } from "../src/lib/todos";
+
+const makeTodo = (overrides: Partial<Todo> = {}): Todo => ({
+  id: "1",
+  ref: "T-AAAAAA",
+  title: "default",
+  priority: "normal",
+  done: false,
+  createdAt: new Date().toISOString(),
+  ...overrides,
+});
 
 describe("todos", () => {
   it("createTodo builds a todo with a generated id and ref", () => {
@@ -22,9 +33,7 @@ describe("todos", () => {
   });
 
   it("createTodo falls back to normal for an unknown priority", () => {
-    expect(createTodo({ title: "x", priority: "urgent" }).priority).toBe(
-      "normal"
-    );
+    expect(createTodo({ title: "x", priority: "urgent" }).priority).toBe("normal");
     for (const p of PRIORITIES) {
       expect(createTodo({ title: "x", priority: p }).priority).toBe(p);
     }
@@ -37,44 +46,47 @@ describe("todos", () => {
   });
 
   it("reducer toggle flips done without mutating the input", () => {
-    const state = [{ id: "1", title: "A", done: false }];
+    const state: Todo[] = [makeTodo({ id: "1", title: "A", done: false })];
     const next = todosReducer(state, { type: "toggle", id: "1" });
     expect(next[0].done).toBe(true);
     expect(state[0].done).toBe(false);
   });
 
   it("reducer remove drops the matching todo", () => {
-    const state = [{ id: "1" }, { id: "2" }];
-    expect(
-      todosReducer(state, { type: "remove", id: "1" })
-    ).toEqual([{ id: "2" }]);
+    const state: Todo[] = [makeTodo({ id: "1" }), makeTodo({ id: "2" })];
+    const result = todosReducer(state, { type: "remove", id: "1" });
+    expect(result).toHaveLength(1);
+    expect(result[0].id).toBe("2");
   });
 
   it("reducer edit updates the title and ignores blank edits", () => {
-    const state = [{ id: "1", title: "old" }];
-    expect(
-      todosReducer(state, { type: "edit", id: "1", title: "new" })[0].title
-    ).toBe("new");
-    expect(
-      todosReducer(state, { type: "edit", id: "1", title: "  " })[0].title
-    ).toBe("old");
+    const state: Todo[] = [makeTodo({ id: "1", title: "old" })];
+    expect(todosReducer(state, { type: "edit", id: "1", title: "new" })[0].title).toBe("new");
+    expect(todosReducer(state, { type: "edit", id: "1", title: "  " })[0].title).toBe("old");
   });
 
   it("reducer clearCompleted keeps only active todos", () => {
-    const state = [{ id: "1", done: true }, { id: "2", done: false }];
-    expect(todosReducer(state, { type: "clearCompleted" })).toEqual([
-      { id: "2", done: false },
-    ]);
+    const state: Todo[] = [
+      makeTodo({ id: "1", done: true }),
+      makeTodo({ id: "2", done: false }),
+    ];
+    const result = todosReducer(state, { type: "clearCompleted" });
+    expect(result).toHaveLength(1);
+    expect(result[0].id).toBe("2");
+    expect(result[0].done).toBe(false);
   });
 
   it("reducer returns state unchanged for an unknown action", () => {
-    const state = [{ id: "1" }];
-    expect(todosReducer(state, { type: "nope" })).toBe(state);
+    const state: Todo[] = [makeTodo({ id: "1" })];
+    expect(todosReducer(state, { type: "nope" } as any)).toBe(state);
   });
 
   it("countRemaining counts only the active todos", () => {
-    expect(
-      countRemaining([{ done: false }, { done: true }, { done: false }])
-    ).toBe(2);
+    const todos: Todo[] = [
+      makeTodo({ done: false }),
+      makeTodo({ done: true }),
+      makeTodo({ done: false }),
+    ];
+    expect(countRemaining(todos)).toBe(2);
   });
 });
