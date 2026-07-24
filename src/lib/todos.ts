@@ -2,7 +2,7 @@
 // Framework-agnostic business logic: no React here. The useTodos hook wraps
 // these pure functions with useReducer, and the components render their output.
 // Consumes the HOT id module; consumed by the hook and the filter helpers.
-import { newId, newShortRef } from "./id.js";
+import { newId, newShortRef } from "./id";
 
 export const PRIORITIES: string[] = ["low", "normal", "high"];
 
@@ -21,20 +21,21 @@ export interface Todo {
 }
 
 export type TodoAction =
-  | { type: 'add'; input: TodoInput }
-  | { type: 'toggle'; id: string }
-  | { type: 'remove'; id: string }
-  | { type: 'edit'; id: string; title: string }
-  | { type: 'clearCompleted' };
+  | { type: "add"; input: TodoInput }
+  | { type: "toggle"; id: string }
+  | { type: "remove"; id: string }
+  | { type: "edit"; id: string; title: string }
+  | { type: "clearCompleted" };
 
 export function createTodo(input: TodoInput): Todo {
   const title = (input && input.title ? String(input.title) : "").trim();
   if (!title) {
     throw new Error("Cannot create todo: title is required");
   }
-  const priority = PRIORITIES.includes(input && input.priority)
-    ? input.priority!
-    : "normal";
+  const priority =
+    input && input.priority !== undefined && PRIORITIES.includes(input.priority)
+      ? input.priority
+      : "normal";
   return {
     id: newId(),
     ref: newShortRef(),
@@ -58,7 +59,9 @@ export function todosReducer(state: Todo[], action: TodoAction): Todo[] {
       return state.filter((t) => t.id !== action.id);
     case "edit":
       return state.map((t) =>
-        t.id === action.id ? { ...t, title: action.title.trim() || t.title } : t
+        t.id === action.id
+          ? { ...t, title: action.title.trim() || t.title }
+          : t
       );
     case "clearCompleted":
       return state.filter((t) => !t.done);
