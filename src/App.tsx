@@ -1,8 +1,8 @@
 // src/App.tsx — top-level component wiring the hook to the presentational tree.
-import { useTodos } from "./hooks/useTodos";
-import AddTodo from "./components/AddTodo";
-import FilterBar from "./components/FilterBar";
-import TodoList from "./components/TodoList";
+import { useTodos } from "./hooks/useTodos.js";
+import AddTodo from "./components/AddTodo.jsx";
+import FilterBar from "./components/FilterBar.jsx";
+import TodoList from "./components/TodoList.jsx";
 
 export default function App(): React.JSX.Element {
   const {
@@ -16,6 +16,8 @@ export default function App(): React.JSX.Element {
     editTodo,
     clearCompleted,
   } = useTodos();
+
+  const todos = visibleTodos as Array<{ id: string; ref: string; title: string; priority: string; done: boolean; createdAt: string }>;
 
   return (
     <main className="app">
@@ -34,7 +36,7 @@ export default function App(): React.JSX.Element {
       />
 
       <TodoList
-        todos={visibleTodos}
+        todos={todos}
         onToggle={toggleTodo}
         onRemove={removeTodo}
         onEdit={editTodo}
