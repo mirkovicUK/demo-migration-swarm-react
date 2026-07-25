@@ -20,11 +20,11 @@ describe("filter", () => {
   });
 
   it("filterTodos active drops completed todos", () => {
-    expect(filterTodos(sample, "active").map((t) => t.id)).toEqual(["1", "2"]);
+    expect(filterTodos(sample, "active").map((t) => (t as { id: string }).id)).toEqual(["1", "2"]);
   });
 
   it("filterTodos completed keeps only done todos", () => {
-    expect(filterTodos(sample, "completed").map((t) => t.id)).toEqual(["3"]);
+    expect(filterTodos(sample, "completed").map((t) => (t as { id: string }).id)).toEqual(["3"]);
   });
 
   it("filterTodos falls back to all for an unknown filter", () => {
@@ -32,7 +32,7 @@ describe("filter", () => {
   });
 
   it("sortTodos puts active before done, then high→low priority", () => {
-    expect(sortTodos(sample).map((t) => t.id)).toEqual(["2", "1", "3"]);
+    expect(sortTodos(sample).map((t) => (t as { id: string }).id)).toEqual(["2", "1", "3"]);
   });
 
   it("sortTodos is stable within a priority tier", () => {
@@ -40,6 +40,6 @@ describe("filter", () => {
       { id: "a", priority: "normal", done: false },
       { id: "b", priority: "normal", done: false },
     ];
-    expect(sortTodos(tie).map((t) => t.id)).toEqual(["a", "b"]);
+    expect(sortTodos(tie).map((t) => (t as { id: string }).id)).toEqual(["a", "b"]);
   });
 });
